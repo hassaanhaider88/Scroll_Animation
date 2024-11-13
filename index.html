@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make First Animational Website || HMK CodeWeb || Hassaan Haider</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+
+    <div class=" w-full bg-black">
+        <div class="parent w-full min-h-[700vh] relative bg-zinc-500">
+            <div class="w-full sticky Child top-0 h-screen ">
+                <canvas class="w-full h-screen" id="myFrame"></canvas>
+                <h1 class="absolute top-1/2 left-1/2 -translate-x-1/2 text-6xl text-white">Hassaan Haider</h1>
+            </div>
+        </div>
+    </div>cd on 
+    cds 
+
+
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+    integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
+    integrity="sha512-onMTRKJBKz8M1TnqqDuGBlowlH0ohFzMXYRNebz+yOcc5TQr/zAKsthzhuv0hiyUKEiQEQXEynnXCvNTOk50dg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+
+    const images = [];
+    const Canvas = document.querySelector('#myFrame');
+    const Context = Canvas.getContext("2d")
+
+    const frames = {
+        currentIndex: 0,
+        maxIndex: 382
+    }
+
+    let imagesLoaded = 0;
+    function PreLoadImages() {
+        for (var i = 1; i <= frames.maxIndex; i++) {
+            var Count = i.toString().padStart(4, '0');
+            const ImageUrl = `./AllExtractPhotos/frame_${Count}.jpeg`;
+            const Img = new Image();
+            Img.src = ImageUrl;
+            Img.onload = () => {
+                imagesLoaded++;
+                if (imagesLoaded === frames.maxIndex) {
+                    loadImage(frames.currentIndex);
+                    startAnimation();
+                }
+            }
+            images.push(Img)
+        }
+    }
+
+
+    function loadImage(index) {
+        if (index >= 0 && index <= frames.maxIndex) {
+            const img = images[index];
+            Canvas.width = window.innerWidth;
+            Canvas.height = window.innerHeight;
+
+            const scaleX = Canvas.width / img.width;
+            const scaleY = Canvas.height / img.height;
+            const scale = Math.max(scaleX, scaleY)
+            const newWidth = img.width * scale;
+            const newHeight = img.height * scale;
+            const offsetX = (Canvas.width - newWidth) / 2;
+            const offsetY = (Canvas.height - newHeight) / 2;
+
+
+            Context.clearRect(0, 0, Canvas.width, Canvas.height);
+            Context.imageSmoothingEnabled = true;
+            Context.imageSmoothingQuality = 'high';
+            Context.drawImage(img, offsetX, offsetY, newWidth, newHeight);
+            frames.currentIndex = index;
+        }
+    }
+
+
+    function startAnimation() {
+        var tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".parent",
+                start: "top top",
+                scrub: 2,
+                end: 'bottom bottom'
+            }
+        });
+
+        tl.to(frames, {
+            currentIndex: frames.maxIndex,
+            onUpdate: function () {
+                loadImage(Math.floor(frames.currentIndex))
+            }
+        })
+    }
+
+
+
+    PreLoadImages()
+
+</sc
